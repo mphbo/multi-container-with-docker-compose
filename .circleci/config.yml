@@ -49,14 +49,23 @@ jobs:
             docker load -i /tmp/workspace/server.tar
             docker load -i /tmp/workspace/worker.tar
       - run:
-          name: Publish Docker Image to Docker Hub
+          name: Publish Client Image to Docker Hub
           command: |
             echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
             docker push $CLIENT_IMAGE_NAME:latest
+      - run:
+          name: Publish Nginx Image to Docker Hub
+          command: |
             echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
             docker push $NGINX_IMAGE_NAME:latest
+      - run:
+          name: Publish Server Image to Docker Hub
+          command: |
             echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
             docker push $SERVER_IMAGE_NAME:latest
+      - run:
+          name: Publish Worker Image to Docker Hub
+          command: |
             echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
             docker push $WORKER_IMAGE_NAME:latest
 workflows:
