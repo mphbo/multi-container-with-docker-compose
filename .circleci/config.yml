@@ -2,10 +2,10 @@ version: 2.1
 executors:
   docker-publisher:
     environment:
-      CLIENT_IMAGE_NAME: mphbo777/complex-client
-      NGINX_IMAGE_NAME: mphbo777/complex-nginx
-      SERVER_IMAGE_NAME: mphbo777/complex-server
-      WORKER_IMAGE_NAME: mphbo777/complex-worker
+      CLIENT_IMAGE_NAME: client-image
+      NGINX_IMAGE_NAME: nginx-image 
+      SERVER_IMAGE_NAME: server-image
+      WORKER_IMAGE_NAME: worker-image 
     docker:
       - image: circleci/buildpack-deps:stretch
 jobs:
@@ -52,22 +52,26 @@ jobs:
           name: Publish Client Image to Docker Hub
           command: |
             echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
-            docker push $CLIENT_IMAGE_NAME:latest
+            docker tag $CLIENT_IMAGE_NAME mphbo777/complex-client:latest
+            docker push mphbo777/complex-client:latest
       - run:
           name: Publish Nginx Image to Docker Hub
           command: |
             echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
-            docker push $NGINX_IMAGE_NAME:latest
+            docker tag $NGINX_IMAGE_NAME mphbo777/complex-server:latest
+            docker push mphbo777/complex-nginx:latest
       - run:
           name: Publish Server Image to Docker Hub
           command: |
             echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
-            docker push $SERVER_IMAGE_NAME:latest
+            docker tag $SERVER_IMAGE_NAME mphbo777/complex-server:latest
+            docker push mphbo777/complex-server:latest
       - run:
           name: Publish Worker Image to Docker Hub
           command: |
             echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
-            docker push $WORKER_IMAGE_NAME:latest
+            docker tag $WORKER_IMAGE_NAME mphbo777/complex-worker:latest
+            docker push mphbo777/complex-worker:latest
 workflows:
   version: 2
   build-master:
