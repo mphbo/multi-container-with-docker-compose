@@ -15,29 +15,19 @@ jobs:
       - checkout
       - setup_remote_docker
       - run:
-          name: Build Client image
-          command: docker build -t $CLIENT_IMAGE_NAME:latest ./client
+          name: Build Docker Images
+          command: | 
+            docker build -t $CLIENT_IMAGE_NAME:latest ./client
+            docker build -t $NGINX_IMAGE_NAME:latest ./nginx
+            docker build -t $SERVER_IMAGE_NAME:latest ./server
+            docker build -t $WORKER_IMAGE_NAME:latest ./worker
       - run:
-          name: Build Nginx image
-          command: docker build -t $NGINX_IMAGE_NAME:latest ./nginx
-      - run:
-          name: Build Server image
-          command: docker build -t $SERVER_IMAGE_NAME:latest ./server
-      - run:
-          name: Build Worker image
-          command: docker build -t $WORKER_IMAGE_NAME:latest ./worker
-      - run:
-          name: Archive Client image
-          command: docker save -o client.tar $CLIENT_IMAGE_NAME
-      - run:
-          name: Archive Nginx image
-          command: docker save -o nginx.tar $NGINX_IMAGE_NAME
-      - run:
-          name: Archive Server image
-          command: docker save -o server.tar $SERVER_IMAGE_NAME
-      - run:
-          name: Archive Worker image
-          command: docker save -o worker.tar $WORKER_IMAGE_NAME
+          name: Archive Docker Images
+          command: |
+            docker save -o client.tar $CLIENT_IMAGE_NAME
+            docker save -o nginx.tar $NGINX_IMAGE_NAME
+            docker save -o server.tar $SERVER_IMAGE_NAME
+            docker save -o worker.tar $WORKER_IMAGE_NAME
       - persist_to_workspace:
           root: .
           paths:
@@ -52,17 +42,12 @@ jobs:
           at: /tmp/workspace
       - setup_remote_docker
       - run:
-          name: Load archived Client image
-          command: docker load -i /tmp/workspace/client.tar
-      - run:
-          name: Load archived Nginx image
-          command: docker load -i /tmp/workspace/nginx.tar
-      - run:
-          name: Load archived Server image
-          command: docker load -i /tmp/workspace/server.tar
-      - run:
-          name: Load archived Worker image
-          command: docker load -i /tmp/workspace/worker.tar
+          name: Load Archived Docker Images
+          command: |
+            docker load -i /tmp/workspace/client.tar
+            docker load -i /tmp/workspace/nginx.tar
+            docker load -i /tmp/workspace/server.tar
+            docker load -i /tmp/workspace/worker.tar
       - run:
           name: Publish Docker Image to Docker Hub
           command: |
